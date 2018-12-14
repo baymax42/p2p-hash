@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "NODE_ENV=development webpack --progress --watch --config config/webpack.config.js",
     "server": "node build/server.js",
-    "p2p": "node build/p2p.js"
+    "p2p": "node build/p2p.js",
+    "worker": "node build/worker.js"
   },
   "author": "Paweł Górski",
   "license": "MIT",
