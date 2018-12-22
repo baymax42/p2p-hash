@@ -1,5 +1,5 @@
 import * as crypto from 'crypto'
-import { LOGGER } from 'src/utils'
+import { LOGGER } from 'utils'
 import { AllCharacterString, IString } from './generator'
 
 const SHA256 = crypto.createHash('sha256')
