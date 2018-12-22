@@ -1,6 +1,6 @@
 import * as crypto from 'crypto'
+import { LOGGER } from 'src/utils'
 import { AllCharacterString, IString } from './generator'
-import { LOGGER } from './utils'
 
 const SHA256 = crypto.createHash('sha256')
 LOGGER.log('SHA256: ' + SHA256.update('hex').digest('hex'))

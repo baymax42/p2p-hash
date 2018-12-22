@@ -1,4 +1,4 @@
-import { ALL_SYMBOLS } from '../../utils'
+import { ALL_SYMBOLS } from 'src/utils'
 
 export class AllCharacterStringIterator {
   public length: number

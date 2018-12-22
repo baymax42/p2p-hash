@@ -18,7 +18,8 @@ module.exports = {
     // Add in `.ts` and `.tsx` as a resolvable extension.
     extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
     modules: [
-      path.resolve(__dirname, '../node_modules')
+      path.resolve(__dirname, '../node_modules'),
+      path.resolve(__dirname, '../src/')
     ]
   },
   module: {
