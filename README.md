@@ -9,7 +9,7 @@ If you would like to add new entrypoint to watch and build just edit:
 ```js
 entry: {
   server: path.resolve(__dirname, '../src/server/main.ts'),
-  p2p: path.resolve(__dirname, '../src/p2p/main.ts')
+  p2p: path.resolve(__dirname, peer)
 }
 ```
 in `/config/webpack.config.js` by adding another line. 

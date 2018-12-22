@@ -1,25 +1,13 @@
-version: '3'
+version: '3.4'
 
 services:
-  server:
-    image: node:latest
-    build: .
-    ports:
-      - "8001:8000"
-    working_dir: /app
-    volumes:
-      - "/p2p:/app"
-    command: ["npm", "run", "server"]
-
   server1:
     image: node:latest
     build: .
-    ports:
-      - "8002:8000"
     working_dir: /app
     volumes:
       - "/p2p:/app"
-    command: ["npm", "run", "server"]
+    command: ["npm", "run", "p2p"]
 
   p2p:
     image: node:latest

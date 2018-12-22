@@ -6,7 +6,7 @@ module.exports = {
   mode: process.env.NODE_ENV,
   entry: {
     server: path.resolve(__dirname, '../src/server/main.ts'),
-    p2p: path.resolve(__dirname, '../src/p2p/main.ts'),
+    p2p: path.resolve(__dirname, '../src/peer/main.ts'),
     worker: path.resolve(__dirname, '../src/worker/main.ts')
   },
   target: 'node',
