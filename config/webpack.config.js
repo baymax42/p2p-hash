@@ -7,7 +7,8 @@ module.exports = {
   entry: {
     server: path.resolve(__dirname, '../src/server/main.ts'),
     p2p: path.resolve(__dirname, '../src/p2p/main.ts'),
-    worker: path.resolve(__dirname, '../src/worker/main.ts')
+    worker: path.resolve(__dirname, '../src/worker/main.ts'),
+    fileGenerator: path.resolve(__dirname, '../src/HashFileGenerator.ts')
   },
   target: 'node',
   output: {
