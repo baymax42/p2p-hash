@@ -12,5 +12,5 @@ function iterate (generator: IString): void {
   }
 }
 
-const iter = new AllCharacterString(1)
+const iter = new AllCharacterString(2)
 iterate(iter)

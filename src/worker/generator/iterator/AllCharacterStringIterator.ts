@@ -4,7 +4,7 @@ export class AllCharacterStringIterator {
   public length: number
   private mapping: string
   private hasEnded: boolean
-  private readonly currentString: number[]
+  private currentString: number[]
 
   constructor (length: number) {
     this.mapping = ALL_SYMBOLS
@@ -16,7 +16,11 @@ export class AllCharacterStringIterator {
   public next (): string {
     if (!this.hasEnded) {
       const str = this.currentString.map((value: number) => this.mapping.charAt(value)).join('')
-      this.constructNextString()
+      if (Array.from(str).every((v) => v === ALL_SYMBOLS.charAt(ALL_SYMBOLS.length - 1))) {
+        this.hasEnded = true
+      } else {
+        this.constructNextString()
+      }
       return str
     } else {
       throw Error('Iterator is empty')
@@ -28,18 +32,25 @@ export class AllCharacterStringIterator {
   }
 
   private constructNextString (): void {
-    let div = 1
     let rem = 0
-    for (let pos of this.currentString) {
-      if (div > 0) {
-        rem = (pos + div) % this.currentString.length
-        div = Math.floor((pos + div) / this.currentString.length)
-
-        pos = rem
+    for (const j in this.currentString) {
+      if (Number(j) === 0) {
+        if (this.currentString[j] + rem >= ALL_SYMBOLS.length - 1) {
+          rem = 1
+          this.currentString[j] = (this.currentString[j] + rem) % ALL_SYMBOLS.length
+        } else {
+          this.currentString[j] = this.currentString[j] + 1 + rem
+          rem = 0
+        }
       } else {
-        break
+        if (this.currentString[j] + rem > ALL_SYMBOLS.length - 1) {
+          rem = 1
+          this.currentString[j] = (this.currentString[j] + rem) % ALL_SYMBOLS.length
+        } else {
+          this.currentString[j] = this.currentString[j] + rem
+          rem = 0
+        }
       }
     }
-    this.hasEnded = (div <= 0)
   }
 }
