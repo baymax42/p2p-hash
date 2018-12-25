@@ -1,5 +1,5 @@
 import { LOGGER } from 'utils'
-import { Peer } from './index'
+import { Peer } from '.'
 
 export class NewbieState {
   private context: Peer

@@ -8,8 +8,7 @@ The `npm run dev` watches entrypoints and creates files in `/build`.
 If you would like to add new entrypoint to watch and build just edit:
 ```js
 entry: {
-  server: path.resolve(__dirname, '../src/server/main.ts'),
-  p2p: path.resolve(__dirname, peer)
+  server: path.resolve(__dirname, '../src/Server.ts')
 }
 ```
 in `/config/webpack.config.js` by adding another line. 
@@ -18,7 +17,6 @@ For example:
 ```js
 entry: {
   server: path.resolve(__dirname, '../src/server/main.ts'),
-  p2p: path.resolve(__dirname, '../src/p2p/main.ts'),
   something: path.resolve(__dirname, '../src/something.ts'
 }
 ```

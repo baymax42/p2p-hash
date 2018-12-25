@@ -1,11 +1,7 @@
 import { AllCharacterStringIterator, IStringIterator } from './iterator'
 
-export { IStringIterator }
-
-export interface IString {
-  iterator (): IStringIterator
-}
-
+// AllCharacterString
+// Helper generator class for generating strings of given length
 export class AllCharacterString {
   public length: number
 
