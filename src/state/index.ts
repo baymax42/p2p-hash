@@ -1,78 +1,79 @@
-import { Forwarder, Receiver } from '../network'
+import { Forwarder, Receiver } from 'network'
+import { ActionManager, LOGGER } from 'utils'
+import { ElectionState } from './ElectionState'
 import { NewbieState } from './NewbieState'
-import { LOGGER } from '../utils'
+import { WorkerState } from './WorkerState'
 
 export interface IPeerState {
-  queryNetworkHandler (request: object): void
+  queryNetworkMessageHandler (request: any): void
 
-  electionHandler (request: any): void
+  networkMessageHandler (request: any): void
 
-  aliveHandler (request: any): void
+  electionMessageHandler (request: any): void
 
-  resultHandler (request: any): void
+  aliveMessageHandler (request: any): void
 
-  setupCyclicActions (): void
+  resultMessageHandler (request: any): void
+
+  setupActions (): void
 }
 
 export class Peer {
   public receiver: Receiver
   public forwarder: Forwarder
+  public network: string[] = []
+  public actionManager: ActionManager
   private currentState!: IPeerState
-  private cyclicActions: Map<string, NodeJS.Timeout> = new Map<string, NodeJS.Timeout>()
   private readonly states: { [id: string]: IPeerState }
-  private readonly timeout: number = 1000
 
-  constructor (forwarder: Forwarder, receiver: Receiver, state: string) {
+  constructor (forwarder: Forwarder, receiver: Receiver, actionManager: ActionManager, state: string) {
     this.forwarder = forwarder
     this.receiver = receiver
+    this.actionManager = actionManager
     this.states = {
-      newbie: new NewbieState(this)
+      election: new ElectionState(this),
+      newbie: new NewbieState(this),
+      worker: new WorkerState(this)
     }
+
     this.receiver.start()
     this.setupHandlers()
     this.changeState(state)
   }
 
   public changeState (state: string): void {
-    this.removeCyclicActions()
+    this.actionManager.clearAll()
+    LOGGER.log(`STATE HAS CHANGED: ${state}`)
     this.currentState = this.states[state]
-    LOGGER.log(this.currentState)
-    this.currentState.setupCyclicActions()
+    this.currentState.setupActions()
   }
 
-  public queryNetworkHandler (request: any): void {
-    this.currentState.queryNetworkHandler(request)
+  public queryNetworkMessageHandler (request: any): void {
+    this.currentState.queryNetworkMessageHandler(request)
   }
 
-  public electionHandler (request: any): void {
-    this.currentState.electionHandler(request)
+  public networkMessageHandler (request: any): void {
+    this.currentState.networkMessageHandler(request)
   }
 
-  public aliveHandler (request: any): void {
-    this.currentState.aliveHandler(request)
+  public electionMessageHandler (request: any): void {
+    this.currentState.electionMessageHandler(request)
   }
 
-  public resultHandler (request: any): void {
-    this.currentState.resultHandler(request)
+  public aliveMessageHandler (request: any): void {
+    this.currentState.aliveMessageHandler(request)
   }
 
-  public addCyclicAction (name: string, callback: () => void, interval: number) {
-    if (this.cyclicActions.has(name)) {
-      // @ts-ignore - It won't return undefined
-      clearInterval(this.cyclicActions.get(name))
-    }
-    this.cyclicActions.set(name, setInterval(callback, interval))
-  }
-
-  public removeCyclicActions (): void {
-    for (const action of this.cyclicActions.values()) {
-      clearInterval(action)
-    }
+  public resultMessageHandler (request: any): void {
+    this.currentState.resultMessageHandler(request)
   }
 
   private setupHandlers (): void {
     this.receiver
-      .on('queryNetwork', (req) => this.queryNetworkHandler(req))
-      .on('election', (req) => this.electionHandler(req))
+      .on('queryNetwork', (req) => this.queryNetworkMessageHandler(req))
+      .on('network', (req) => this.networkMessageHandler(req))
+      .on('election', (req) => this.electionMessageHandler(req))
+      .on('alive', (req) => this.aliveMessageHandler(req))
+      .on('result', (req) => this.resultMessageHandler(req))
   }
 }

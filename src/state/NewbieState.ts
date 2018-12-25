@@ -1,37 +1,62 @@
 import { LOGGER } from 'utils'
-import { Peer } from '.'
-import { __BROADCAST__ } from '../network/Registry'
+import { IPeerState, Peer } from '.'
 
-export class NewbieState {
+export class NewbieState implements IPeerState {
   private context: Peer
+  private readonly QUERY_ACTION = {
+    callback: () => {
+      const message = {
+        type: 'queryNetwork'
+      }
+      this.context.forwarder.forwardMessage('255.255.255.255', 9000, message)
+    },
+    name: 'query',
+    timeout: 1000
+  }
+  private readonly CHANGE_STATE_ACTION = {
+    callback: () => {
+      this.context.changeState('election')
+    },
+    name: 'electionState',
+    timeout: 10000
+  }
 
   constructor (context: Peer) {
     this.context = context
   }
 
-  public setupCyclicActions (): void {
-    this.context.addCyclicAction('query', () => {
-      const message = {
-        type: 'queryNetwork'
-      }
-      LOGGER.log(message)
-      this.context.forwarder.forwardMessage(__BROADCAST__, 9000, message)
-    }, 1000)
+  public queryNetworkMessageHandler (request: any): void {
+    LOGGER.format_log(request.remote.address, request.type)
   }
 
-  public queryNetworkHandler (request: any): void {
-    LOGGER.log(`${request.remote.address} is in network`)
+  public networkMessageHandler (request: any): void {
+    LOGGER.format_log(request.remote.address, request.type)
+    this.context.changeState('worker')
   }
 
-  public aliveHandler (request: any): void {
-    return
+  public aliveMessageHandler (request: any): void {
+    LOGGER.format_log(request.remote.address, request.type)
   }
 
-  public electionHandler (request: any): void {
-    return
+  public electionMessageHandler (request: any): void {
+    LOGGER.format_log(request.remote.address, request.type)
+    this.context.changeState('election')
   }
 
-  public resultHandler (request: any): void {
-    return
+  public resultMessageHandler (request: any): void {
+    LOGGER.format_log(request.remote.address, request.type)
+  }
+
+  public setupActions (): void {
+    this.context.actionManager.addTimedAction(
+      this.CHANGE_STATE_ACTION.name,
+      this.CHANGE_STATE_ACTION.callback,
+      this.CHANGE_STATE_ACTION.timeout
+    )
+    this.context.actionManager.addCyclicAction(
+      this.QUERY_ACTION.name,
+      this.QUERY_ACTION.callback,
+      this.QUERY_ACTION.timeout
+    )
   }
 }

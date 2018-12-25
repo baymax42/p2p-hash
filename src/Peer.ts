@@ -1,9 +1,5 @@
 import { Forwarder, Receiver } from './network'
-import { Registry } from './network/Registry'
 import { Peer } from './state'
+import { ActionManager } from './utils'
 
-const registry = new Registry()
-const forwarder = new Forwarder(registry)
-const receiver = new Receiver(9000)
-
-new Peer(forwarder, receiver, 'newbie')
+new Peer(new Forwarder(), new Receiver(9000), new ActionManager(), 'newbie')
