@@ -5,6 +5,12 @@ export interface IPeerState {
   loop (): void
 
   queryNetworkHandler (request: object): void
+
+  electionHandler (request: any): void
+
+  aliveHandler (request: any): void
+
+  resultHandler (request: any): void
 }
 
 export class Peer {
@@ -15,9 +21,9 @@ export class Peer {
   private readonly states: { [id: string]: IPeerState }
   private readonly timeout: number = 1000
 
-  constructor (state: string) {
-    this.forwarder = new Forwarder()
-    this.receiver = new Receiver(9000)
+  constructor (forwarder: Forwarder, receiver: Receiver, state: string) {
+    this.forwarder = forwarder
+    this.receiver = receiver
     this.states = {
       newbie: new NewbieState(this)
     }
@@ -34,6 +40,18 @@ export class Peer {
 
   public queryNetworkHandler (request: any): void {
     this.currentState.queryNetworkHandler(request)
+  }
+
+  public electionHandler (request: any): void {
+    this.currentState.electionHandler(request)
+  }
+
+  public aliveHandler (request: any): void {
+    this.currentState.aliveHandler(request)
+  }
+
+  public resultHandler (request: any): void {
+    this.currentState.resultHandler(request)
   }
 
   private setupHandlers (): void {

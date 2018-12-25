@@ -18,4 +18,16 @@ export class NewbieState {
   public queryNetworkHandler (request: any): void {
     LOGGER.log(`${request.remote.address} is in network`)
   }
+
+  public aliveHandler (request: any): void {
+    return
+  }
+
+  public electionHandler (request: any): void {
+    return
+  }
+
+  public resultHandler (request: any): void {
+    return
+  }
 }
