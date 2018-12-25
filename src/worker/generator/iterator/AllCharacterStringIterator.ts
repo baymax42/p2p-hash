@@ -1,5 +1,6 @@
 import { ALL_SYMBOLS } from 'utils'
 
+// Iterator returning next string of given length
 export class AllCharacterStringIterator {
   public length: number
   private mapping: string

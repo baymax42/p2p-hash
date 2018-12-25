@@ -1,9 +1,10 @@
-import { ALL_SYMBOLS } from '../../utils'
+import { ALL_SYMBOLS } from 'utils'
 
+// Iterator returning random string of given length
 export class RandomStringIterator {
   public wordLength: number
   public amount: number
-  public amountCounter: number
+  private amountCounter: number
   private mapping: string
 
   constructor (wordLength: number, amount: number) {
