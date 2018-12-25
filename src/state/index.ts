@@ -43,7 +43,6 @@ export class Peer {
 
   public changeState (state: string): void {
     this.actionManager.clearAll()
-    LOGGER.log(`STATE HAS CHANGED: ${state}`)
     this.currentState = this.states[state]
     this.currentState.setupActions()
   }

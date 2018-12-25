@@ -26,25 +26,25 @@ export class NewbieState implements IPeerState {
   }
 
   public queryNetworkMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public networkMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
     this.context.changeState('worker')
   }
 
   public aliveMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public electionMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
     this.context.changeState('election')
   }
 
   public resultMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public setupActions (): void {
@@ -58,5 +58,9 @@ export class NewbieState implements IPeerState {
       this.QUERY_ACTION.callback,
       this.QUERY_ACTION.timeout
     )
+  }
+
+  public toString (): string {
+    return 'NEWBIE'
   }
 }

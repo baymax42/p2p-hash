@@ -9,26 +9,30 @@ export class WorkerState implements IPeerState {
   }
 
   public aliveMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public electionMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public networkMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public queryNetworkMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public resultMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public setupActions (): void {
     return
+  }
+
+  public toString (): string {
+    return 'WORKER'
   }
 }

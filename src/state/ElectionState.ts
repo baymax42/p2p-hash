@@ -28,11 +28,11 @@ export class ElectionState implements IPeerState {
   }
 
   public aliveMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public electionMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
     if (this.context.network.indexOf(request.remote.address) === -1) {
       this.context.network.push(request.remote.address)
       // Reset timer for changing state
@@ -42,20 +42,20 @@ export class ElectionState implements IPeerState {
         this.CHANGE_STATE_ACTION.callback,
         this.CHANGE_STATE_ACTION.timeout
       )
-      LOGGER.log(`Added to registry: ${request.remote.address}`)
+      LOGGER.format_log(request.remote.address, this.toString(), request.type)
     }
   }
 
   public networkMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public queryNetworkMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public resultMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, request.type)
+    LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
   public setupActions (): void {
@@ -69,5 +69,9 @@ export class ElectionState implements IPeerState {
       this.CHANGE_STATE_ACTION.callback,
       this.CHANGE_STATE_ACTION.timeout
     )
+  }
+
+  public toString (): string {
+    return 'ELECTION'
   }
 }
