@@ -6,8 +6,8 @@ export class Logger extends Console {
     super(stdout, stderr, ignoreErrors)
   }
 
-  public format_log (address: string, content: any) {
-    this.log(`[${new Date().toLocaleString()}](${address}): ${content}`)
+  public format_log (address: string, state: string, content: any) {
+    this.log(`[${new Date().toLocaleString()}][${state}]{${address}}: ${content}`)
   }
 }
 
