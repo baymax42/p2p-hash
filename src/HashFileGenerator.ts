@@ -1,5 +1,5 @@
 import * as crypto from 'crypto'
-import { RandomString } from './worker/generator'
+import { RandomString } from './generator'
 
 function createHashFile (amount: number, wordLength: number, hashMethod: string, path: string) {
   const randomStringIterator = new RandomString(wordLength, amount).iterator()
