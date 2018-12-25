@@ -18,7 +18,7 @@ export class ActionManager {
   public addTimedAction (name: string, callback: () => void, timeout: number) {
     if (this.timeouts.has(name)) {
       // @ts-ignore - It won't return undefined
-      clearTimeout(this.actions.get(name))
+      clearTimeout(this.timeouts.get(name))
     }
     this.timeouts.set(name, setTimeout(callback, timeout))
   }
