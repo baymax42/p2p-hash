@@ -1,5 +1,6 @@
 import { LOGGER } from 'utils'
 import { Peer } from '.'
+import { __BROADCAST__ } from '../network/Registry'
 
 export class NewbieState {
   private context: Peer
@@ -8,11 +9,14 @@ export class NewbieState {
     this.context = context
   }
 
-  public loop (): void {
-    const msg = {
-      type: 'queryNetwork'
-    }
-    this.context.forwarder.forwardMessage('255.255.255.255', 9000, msg)
+  public setupCyclicActions (): void {
+    this.context.addCyclicAction('query', () => {
+      const message = {
+        type: 'queryNetwork'
+      }
+      LOGGER.log(message)
+      this.context.forwarder.forwardMessage(__BROADCAST__, 9000, message)
+    }, 1000)
   }
 
   public queryNetworkHandler (request: any): void {

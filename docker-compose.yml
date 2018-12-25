@@ -7,7 +7,7 @@ services:
     working_dir: /app
     volumes:
       - "/p2p:/app"
-    command: ["npm", "run", "p2p"]
+    command: ["npm", "run", "peer"]
 
   p2p:
     image: node:latest
@@ -15,4 +15,4 @@ services:
     working_dir: /app
     volumes:
       - "/p2p:/app"
-    command: ["npm", "run", "p2p"]
+    command: ["npm", "run", "peer"]

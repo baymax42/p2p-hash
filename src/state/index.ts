@@ -1,9 +1,8 @@
-import { Forwarder, Receiver } from '../communication'
+import { Forwarder, Receiver } from '../network'
 import { NewbieState } from './NewbieState'
+import { LOGGER } from '../utils'
 
 export interface IPeerState {
-  loop (): void
-
   queryNetworkHandler (request: object): void
 
   electionHandler (request: any): void
@@ -11,13 +10,15 @@ export interface IPeerState {
   aliveHandler (request: any): void
 
   resultHandler (request: any): void
+
+  setupCyclicActions (): void
 }
 
 export class Peer {
   public receiver: Receiver
   public forwarder: Forwarder
   private currentState!: IPeerState
-  private interval!: NodeJS.Timeout
+  private cyclicActions: Map<string, NodeJS.Timeout> = new Map<string, NodeJS.Timeout>()
   private readonly states: { [id: string]: IPeerState }
   private readonly timeout: number = 1000
 
@@ -33,9 +34,10 @@ export class Peer {
   }
 
   public changeState (state: string): void {
-    clearInterval(this.interval)
+    this.removeCyclicActions()
     this.currentState = this.states[state]
-    this.interval = setInterval(() => { this.currentState.loop() }, this.timeout)
+    LOGGER.log(this.currentState)
+    this.currentState.setupCyclicActions()
   }
 
   public queryNetworkHandler (request: any): void {
@@ -54,9 +56,23 @@ export class Peer {
     this.currentState.resultHandler(request)
   }
 
+  public addCyclicAction (name: string, callback: () => void, interval: number) {
+    if (this.cyclicActions.has(name)) {
+      // @ts-ignore - It won't return undefined
+      clearInterval(this.cyclicActions.get(name))
+    }
+    this.cyclicActions.set(name, setInterval(callback, interval))
+  }
+
+  public removeCyclicActions (): void {
+    for (const action of this.cyclicActions.values()) {
+      clearInterval(action)
+    }
+  }
+
   private setupHandlers (): void {
-    this.receiver.on('queryNetwork', (req) => {
-      this.queryNetworkHandler(req)
-    })
+    this.receiver
+      .on('queryNetwork', (req) => this.queryNetworkHandler(req))
+      .on('election', (req) => this.electionHandler(req))
   }
 }
