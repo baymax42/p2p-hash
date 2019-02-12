@@ -1,19 +1,21 @@
 import { Forwarder, Receiver } from 'network'
-import { ActionManager, LOGGER } from 'utils'
+import { ActionManager} from 'utils'
 import { ElectionState } from './ElectionState'
 import { NewbieState } from './NewbieState'
 import { WorkerState } from './WorkerState'
+import {IdleState} from "./IdleState";
+import {SourceState} from "./SourceState";
+import {DestinationState} from "./DestinationState";
+import {NetworkRegister} from "../network/NetworkRegister";
 
 export interface IPeerState {
   queryNetworkMessageHandler (request: any): void
 
-  networkMessageHandler (request: any): void
-
   electionMessageHandler (request: any): void
 
-  aliveMessageHandler (request: any): void
+  workingOnMessageHandler (request: any): void
 
-  resultMessageHandler (request: any): void
+  fetchFileMessageHandler (request: any): void
 
   setupActions (): void
 }
@@ -23,17 +25,22 @@ export class Peer {
   public forwarder: Forwarder
   public network: string[] = []
   public actionManager: ActionManager
+  public register: NetworkRegister
   private currentState!: IPeerState
   private readonly states: { [id: string]: IPeerState }
 
-  constructor (forwarder: Forwarder, receiver: Receiver, actionManager: ActionManager, state: string) {
+  constructor (forwarder: Forwarder, receiver: Receiver, register: NetworkRegister, actionManager: ActionManager, state: string) {
     this.forwarder = forwarder
     this.receiver = receiver
+    this.register = register
     this.actionManager = actionManager
     this.states = {
       election: new ElectionState(this),
       newbie: new NewbieState(this),
-      worker: new WorkerState(this)
+      worker: new WorkerState(this),
+      idle: new IdleState(this),
+      source: new SourceState(this),
+      destination: new DestinationState(this)
     }
 
     this.receiver.start()
@@ -51,28 +58,23 @@ export class Peer {
     this.currentState.queryNetworkMessageHandler(request)
   }
 
-  public networkMessageHandler (request: any): void {
-    this.currentState.networkMessageHandler(request)
+  public workingOnMessageHandler (request: any): void {
+    this.currentState.workingOnMessageHandler(request)
   }
 
   public electionMessageHandler (request: any): void {
     this.currentState.electionMessageHandler(request)
   }
 
-  public aliveMessageHandler (request: any): void {
-    this.currentState.aliveMessageHandler(request)
-  }
-
-  public resultMessageHandler (request: any): void {
-    this.currentState.resultMessageHandler(request)
+  public fetchFileMessageHandler (request: any): void {
+    this.currentState.fetchFileMessageHandler(request)
   }
 
   private setupHandlers (): void {
     this.receiver
       .on('queryNetwork', (req) => this.queryNetworkMessageHandler(req))
-      .on('network', (req) => this.networkMessageHandler(req))
+      .on('workingOn', (req) => this.workingOnMessageHandler(req))
       .on('election', (req) => this.electionMessageHandler(req))
-      .on('alive', (req) => this.aliveMessageHandler(req))
-      .on('result', (req) => this.resultMessageHandler(req))
+      .on('fetchFile', (req) => this.fetchFileMessageHandler(req))
   }
 }

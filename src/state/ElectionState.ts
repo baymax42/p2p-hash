@@ -31,32 +31,19 @@ export class ElectionState implements IPeerState {
     LOGGER.format_log(request.remote.address, this.toString(), request.type)
   }
 
+  public queryNetworkMessageHandler (request: any): void {
+    this.context.actionManager.clearTimedAction(this.CHANGE_STATE_ACTION.name)
+  }
+
   public electionMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, this.toString(), request.type)
-    if (this.context.network.indexOf(request.remote.address) === -1) {
-      this.context.network.push(request.remote.address)
-      // Reset timer for changing state
-      this.context.actionManager.clearTimedAction('changeState')
-      this.context.actionManager.addTimedAction(
-        this.CHANGE_STATE_ACTION.name,
-        this.CHANGE_STATE_ACTION.callback,
-        this.CHANGE_STATE_ACTION.timeout
-      )
-      LOGGER.format_log(request.remote.address, this.toString(), request.type)
+    if(request.content) {
+      this.context.register.upsertEntry(request.remote.address, {file: request.content.hasFile, hash: null})
     }
   }
 
-  public networkMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, this.toString(), request.type)
-  }
+  public workingOnMessageHandler (request: any): void {}
 
-  public queryNetworkMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, this.toString(), request.type)
-  }
-
-  public resultMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, this.toString(), request.type)
-  }
+  public fetchFileMessageHandler (request: any): void {}
 
   public setupActions (): void {
     this.context.actionManager.addCyclicAction(
