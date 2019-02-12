@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "NODE_ENV=development webpack --progress --watch --config config/webpack.config.js",
     "server": "node build/server.js",
-    "p2p": "node build/p2p.js"
+    "p2p": "node build/p2p.js",
+    "worker": "node build/worker.js"
   },
   "author": "Paweł Górski",
   "license": "MIT",
@@ -16,7 +17,7 @@
   },
   "devDependencies": {
     "@types/express": "^4.16.0",
-    "@types/node": "^10.12.12",
+    "@types/node": "^10.12.18",
     "awesome-typescript-loader": "^5.2.1",
     "ts-loader": "^5.3.1",
     "tslint": "^5.11.0",
