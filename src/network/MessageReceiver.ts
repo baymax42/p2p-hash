@@ -4,7 +4,7 @@ import * as os from 'os'
 import { LOGGER } from 'utils'
 
 // IPC class for receiving and processing messages from peers
-export class Receiver extends EventEmitter {
+export class MessageReceiver extends EventEmitter {
   private server: Socket
   private ips: string[]
 
@@ -38,6 +38,18 @@ export class Receiver extends EventEmitter {
     this.server.removeAllListeners()
   }
 
+  // Emit custom event based on message type
+  private emitMessage (content: any, remote: any): void {
+    // and validate if sent data is correct
+    // TODO: Might need more strict validation depending on message type
+    if ('type' in content) {
+      // Pass the information about the remote
+      content.remote = remote
+      // Emit event based on message type
+      this.emit(content.type, content)
+    }
+  }
+
   // Get public ip addresses of the machine
   private getIpAddresses (): string[] {
     const interfaces = os.networkInterfaces()
@@ -56,17 +68,5 @@ export class Receiver extends EventEmitter {
   // Deserialize received data from IPC
   private unmarshal (data: Buffer): JSON {
     return JSON.parse(data.toString())
-  }
-
-  // Emit custom event based on message type
-  // and validate if sent data is correct
-  private emitMessage (content: any, remote: any): void {
-    // TODO: Might need more strict validation depending on message type
-    if ('type' in content) {
-      // Pass the information about the remote
-      content.remote = remote
-      // Emit event based on message type
-      this.emit(content.type, content)
-    }
   }
 }
