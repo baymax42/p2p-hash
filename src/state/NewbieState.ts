@@ -1,4 +1,3 @@
-import { LOGGER } from 'utils'
 import { IPeerState, Peer } from '.'
 
 export class NewbieState implements IPeerState {
@@ -18,34 +17,20 @@ export class NewbieState implements IPeerState {
       this.context.changeState('election')
     },
     name: 'electionState',
-    timeout: 10000
+    timeout: 5000
   }
 
   constructor (context: Peer) {
     this.context = context
   }
 
-  public queryNetworkMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, this.toString(), request.type)
-  }
+  public queryNetworkMessageHandler (request: any): void {}
 
-  public networkMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, this.toString(), request.type)
-    this.context.changeState('worker')
-  }
+  public electionMessageHandler (request: any): void {}
 
-  public aliveMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, this.toString(), request.type)
-  }
+  public workingOnMessageHandler (request: any): void {}
 
-  public electionMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, this.toString(), request.type)
-    this.context.changeState('election')
-  }
-
-  public resultMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, this.toString(), request.type)
-  }
+  public fetchFileMessageHandler (request: any): void {}
 
   public setupActions (): void {
     this.context.actionManager.addTimedAction(

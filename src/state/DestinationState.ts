@@ -1,7 +1,6 @@
-import { LOGGER } from 'utils'
-import { IPeerState, Peer } from './index'
+import {IPeerState, Peer} from '.'
 
-export class WorkerState implements IPeerState {
+export class DestinationState implements IPeerState {
   private context: Peer
 
   constructor (context: Peer) {
@@ -14,17 +13,16 @@ export class WorkerState implements IPeerState {
 
   public workingOnMessageHandler (request: any): void {
     if (request.content) {
-      this.context.register.addEntry(request.remote.address, {file: null, hash:request.content.hash})
+      this.context.register.upsertEntry(request.remote.address, {file: null, hash: request.content.hash})
     }
   }
 
   public fetchFileMessageHandler (request: any): void {}
 
-  public setupActions (): void {
-    return
-  }
+  public setupActions (): void {}
 
   public toString (): string {
-    return 'WORKER'
+    return 'DESTINATION'
   }
+
 }
