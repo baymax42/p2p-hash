@@ -2,7 +2,7 @@ import dgram, { Socket } from 'dgram'
 import { LOGGER } from 'utils'
 
 // IPC class for sending messages
-export class Forwarder {
+export class MessageForwarder {
   private client: Socket
 
   constructor () {
