@@ -7,16 +7,15 @@ function createHashFile (amount: number, wordLength: number, hashMethods: string
   const logger = fs.createWriteStream(path, {
     flags: 'w'
   })
-
   while (randomStringIterator.hasNext()) {
     const randomString = randomStringIterator.next()
     const hashMethod = hashMethods[Math.floor(Math.random() * hashMethods.length)]
     const hash = crypto.createHash(hashMethod)
     const hashString = hash.update(randomString).digest('hex')
-    logger.write(hashString + '\n')
+    logger.write(hashMethod + ' ' + hashString + '\n')
   }
   logger.end()
 }
 
 const methods = ['md5', 'sha1']
-createHashFile(5, 4, methods, 'testHashFile.txt')
+createHashFile(10, 4, methods, 'testHashFile.txt')
