@@ -40,7 +40,7 @@ export class ElectionState implements IPeerState {
 
   public fetchFileMessageHandler (request: any): void {}
 
-  public setupActions (): void {
+  public initialize (): void {
     this.context.actionManager.addCyclicAction(
       this.ELECTION_ACTION.name,
       this.ELECTION_ACTION.callback,

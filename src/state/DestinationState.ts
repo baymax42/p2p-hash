@@ -1,4 +1,4 @@
-import {IPeerState, Peer} from '.'
+import { IPeerState, Peer } from '.'
 
 export class DestinationState implements IPeerState {
   private context: Peer
@@ -19,7 +19,7 @@ export class DestinationState implements IPeerState {
 
   public fetchFileMessageHandler (request: any): void {}
 
-  public setupActions (): void {}
+  public initialize (): void {}
 
   public toString (): string {
     return 'DESTINATION'

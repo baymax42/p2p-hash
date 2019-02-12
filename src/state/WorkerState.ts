@@ -1,4 +1,3 @@
-import { LOGGER } from 'utils'
 import { IPeerState, Peer } from './index'
 
 export class WorkerState implements IPeerState {
@@ -20,7 +19,7 @@ export class WorkerState implements IPeerState {
 
   public fetchFileMessageHandler (request: any): void {}
 
-  public setupActions (): void {
+  public initialize (): void {
     return
   }
 

@@ -1,5 +1,5 @@
 import { NetworkFacade } from 'network'
-import { ActionManager } from 'utils'
+import { ActionManager, HashManager } from 'utils'
 import { NetworkRegister } from '../network/NetworkRegister'
 import { DestinationState } from './DestinationState'
 import { ElectionState } from './ElectionState'
@@ -17,7 +17,7 @@ export interface IPeerState {
 
   fetchFileMessageHandler (request: any): void
 
-  setupActions (): void
+  initialize (): void
 }
 
 export class Peer {
@@ -28,7 +28,7 @@ export class Peer {
   private currentState!: IPeerState
   private readonly states: { [id: string]: IPeerState }
 
-  constructor (register: NetworkRegister, actionManager: ActionManager, state: string) {
+  constructor (hashManager: HashManager, register: NetworkRegister, actionManager: ActionManager, state: string) {
     this.register = register
     this.actionManager = actionManager
     this.states = {
@@ -48,7 +48,7 @@ export class Peer {
   public changeState (state: string): void {
     this.actionManager.clearAll()
     this.currentState = this.states[state]
-    this.currentState.setupActions()
+    this.currentState.initialize()
   }
 
   public queryNetworkMessageHandler (request: any): void {

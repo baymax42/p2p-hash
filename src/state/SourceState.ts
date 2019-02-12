@@ -1,4 +1,4 @@
-import {IPeerState, Peer} from '.';
+import { IPeerState, Peer } from '.'
 
 export class SourceState implements IPeerState {
   private context: Peer
@@ -25,7 +25,7 @@ export class SourceState implements IPeerState {
 
   public fetchFileMessageHandler (request: any): void {}
 
-  public setupActions (): void {
+  public initialize (): void {
     this.context.actionManager.addTimedAction(
       this.CHANGE_STATE_ACTION.name,
       this.CHANGE_STATE_ACTION.callback,

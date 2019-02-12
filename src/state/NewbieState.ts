@@ -32,7 +32,7 @@ export class NewbieState implements IPeerState {
 
   public fetchFileMessageHandler (request: any): void {}
 
-  public setupActions (): void {
+  public initialize (): void {
     this.context.actionManager.addTimedAction(
       this.CHANGE_STATE_ACTION.name,
       this.CHANGE_STATE_ACTION.callback,
