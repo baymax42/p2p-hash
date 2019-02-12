@@ -24,7 +24,7 @@ export class HashManager extends EventEmitter {
     if (found !== -1) {
       this._hashes[found].plaintext = entry.plaintext
       this.emit('change', {
-        allAmount: this._hashes.length,
+        all: this._hashes,
         solved: this._hashes.filter((v) => v.plaintext !== '')
       })
     }

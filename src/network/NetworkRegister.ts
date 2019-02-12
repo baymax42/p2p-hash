@@ -11,7 +11,7 @@ export class NetworkRegister {
 
   public upsertEntry (address: string, data: object): void {
     if (this.entries.has(address)) {
-      let previous = this.entries.get(address)
+      const previous = this.entries.get(address)
       for (let content in data) {
         if (data[content] == null) {
           data[content] = previous[content]
