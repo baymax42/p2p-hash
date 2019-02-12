@@ -5,6 +5,22 @@
     <title>ExpressJS</title>
 </head>
 <body>
-    <h1>Hello</h1>
+<h1>Hello</h1>
 </body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+  function getHashes () {
+    return axios.post('/api/hashes').then((response) => {
+      if (response.data) {
+        console.log(response.data.all.length)
+        console.log(response.data.solved.length)
+      }
+      getHashes()
+    }).catch((err) => {
+      throw err
+    })
+  }
+
+  getHashes()
+</script>
 </html>
