@@ -1,4 +1,3 @@
-import { LOGGER } from 'utils'
 import { IPeerState, Peer } from './index'
 
 export class ElectionState implements IPeerState {
@@ -16,7 +15,7 @@ export class ElectionState implements IPeerState {
       const message = {
         type: 'election'
       }
-      this.context.forwarder.forwardMessage('255.255.255.255', 9000, message)
+      this.context.networkFacade.broadcast(message)
     },
     name: 'election',
     timeout: 1000
@@ -27,17 +26,13 @@ export class ElectionState implements IPeerState {
     this.isElected = false
   }
 
-  public aliveMessageHandler (request: any): void {
-    LOGGER.format_log(request.remote.address, this.toString(), request.type)
-  }
-
   public queryNetworkMessageHandler (request: any): void {
     this.context.actionManager.clearTimedAction(this.CHANGE_STATE_ACTION.name)
   }
 
   public electionMessageHandler (request: any): void {
-    if(request.content) {
-      this.context.register.upsertEntry(request.remote.address, {file: request.content.hasFile, hash: null})
+    if (request.content) {
+      this.context.register.upsertEntry(request.remote.address, { file: request.content.hasFile, hash: null })
     }
   }
 

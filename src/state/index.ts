@@ -1,12 +1,12 @@
-import { Forwarder, Receiver } from 'network'
-import { ActionManager} from 'utils'
+import { NetworkFacade } from 'network'
+import { ActionManager } from 'utils'
+import { NetworkRegister } from '../network/NetworkRegister'
+import { DestinationState } from './DestinationState'
 import { ElectionState } from './ElectionState'
+import { IdleState } from './IdleState'
 import { NewbieState } from './NewbieState'
+import { SourceState } from './SourceState'
 import { WorkerState } from './WorkerState'
-import {IdleState} from "./IdleState";
-import {SourceState} from "./SourceState";
-import {DestinationState} from "./DestinationState";
-import {NetworkRegister} from "../network/NetworkRegister";
 
 export interface IPeerState {
   queryNetworkMessageHandler (request: any): void
@@ -21,29 +21,26 @@ export interface IPeerState {
 }
 
 export class Peer {
-  public receiver: Receiver
-  public forwarder: Forwarder
+  public networkFacade: NetworkFacade
   public network: string[] = []
   public actionManager: ActionManager
   public register: NetworkRegister
   private currentState!: IPeerState
   private readonly states: { [id: string]: IPeerState }
 
-  constructor (forwarder: Forwarder, receiver: Receiver, register: NetworkRegister, actionManager: ActionManager, state: string) {
-    this.forwarder = forwarder
-    this.receiver = receiver
+  constructor (register: NetworkRegister, actionManager: ActionManager, state: string) {
     this.register = register
     this.actionManager = actionManager
     this.states = {
+      destination: new DestinationState(this),
       election: new ElectionState(this),
-      newbie: new NewbieState(this),
-      worker: new WorkerState(this),
       idle: new IdleState(this),
+      newbie: new NewbieState(this),
       source: new SourceState(this),
-      destination: new DestinationState(this)
+      worker: new WorkerState(this)
     }
 
-    this.receiver.start()
+    this.networkFacade = new NetworkFacade()
     this.setupHandlers()
     this.changeState(state)
   }
@@ -71,7 +68,7 @@ export class Peer {
   }
 
   private setupHandlers (): void {
-    this.receiver
+    this.networkFacade
       .on('queryNetwork', (req) => this.queryNetworkMessageHandler(req))
       .on('workingOn', (req) => this.workingOnMessageHandler(req))
       .on('election', (req) => this.electionMessageHandler(req))

@@ -7,7 +7,7 @@ export class NewbieState implements IPeerState {
       const message = {
         type: 'queryNetwork'
       }
-      this.context.forwarder.forwardMessage('255.255.255.255', 9000, message)
+      this.context.networkFacade.broadcast(message)
     },
     name: 'query',
     timeout: 1000

@@ -1,4 +1,4 @@
-import {IPeerState, Peer} from '.';
+import { IPeerState, Peer } from '.'
 
 export class IdleState implements IPeerState {
   private context: Peer
