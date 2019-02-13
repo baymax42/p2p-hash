@@ -1,7 +1,7 @@
-import { IPeerState, Peer } from '.'
+import { Peer } from '.'
+import { PeerState } from './PeerState'
 
-export class NewbieState implements IPeerState {
-  private context: Peer
+export class NewbieState extends PeerState {
   private readonly QUERY_ACTION = {
     callback: () => {
       const message = {
@@ -21,28 +21,12 @@ export class NewbieState implements IPeerState {
   }
 
   constructor (context: Peer) {
-    this.context = context
+    super(context)
   }
 
-  public queryNetworkMessageHandler (request: any): void {}
-
-  public electionMessageHandler (request: any): void {}
-
-  public workingOnMessageHandler (request: any): void {}
-
-  public fetchFileMessageHandler (request: any): void {}
-
   public initialize (): void {
-    this.context.actionManager.addTimedAction(
-      this.CHANGE_STATE_ACTION.name,
-      this.CHANGE_STATE_ACTION.callback,
-      this.CHANGE_STATE_ACTION.timeout
-    )
-    this.context.actionManager.addCyclicAction(
-      this.QUERY_ACTION.name,
-      this.QUERY_ACTION.callback,
-      this.QUERY_ACTION.timeout
-    )
+    this.context.actionManager.addTimedAction(this.CHANGE_STATE_ACTION)
+    this.context.actionManager.addCyclicAction(this.QUERY_ACTION)
   }
 
   public toString (): string {

@@ -1,10 +1,20 @@
-import { IPeerState, Peer } from './index'
+import { Peer } from '.'
+import { PeerState } from './PeerState'
 
-export class WorkerState implements IPeerState {
-  private context: Peer
+export class WorkerState extends PeerState {
+  private readonly QUERY_ACTION = {
+    callback: () => {
+      const message = {
+        type: 'workingOn'
+      }
+      this.context.networkFacade.broadcast(message)
+    },
+    name: 'workingOn',
+    timeout: 1000
+  }
 
   constructor (context: Peer) {
-    this.context = context
+    super(context)
   }
 
   public queryNetworkMessageHandler (request: any): void {}
@@ -12,15 +22,18 @@ export class WorkerState implements IPeerState {
   public electionMessageHandler (request: any): void {}
 
   public workingOnMessageHandler (request: any): void {
+    super.workingOnMessageHandler(request)
     if (request.content) {
-      this.context.register.addEntry(request.remote.address, {file: null, hash:request.content.hash})
+      this.context.register.upsertEntry(request.remote.address, { hasFile: null, hash: request.content.hash })
     }
   }
 
-  public fetchFileMessageHandler (request: any): void {}
+  public fetchFileMessageHandler (request: any): void {
+    super.fetchFileMessageHandler(request)
+  }
 
   public initialize (): void {
-    return
+    this.context.actionManager.addCyclicAction(this.QUERY_ACTION)
   }
 
   public toString (): string {

@@ -7,28 +7,19 @@ import { IdleState } from './IdleState'
 import { NewbieState } from './NewbieState'
 import { SourceState } from './SourceState'
 import { WorkerState } from './WorkerState'
-
-export interface IPeerState {
-  queryNetworkMessageHandler (request: any): void
-
-  electionMessageHandler (request: any): void
-
-  workingOnMessageHandler (request: any): void
-
-  fetchFileMessageHandler (request: any): void
-
-  initialize (): void
-}
+import { PeerState } from './PeerState'
 
 export class Peer {
   public networkFacade: NetworkFacade
-  public network: string[] = []
   public actionManager: ActionManager
   public register: NetworkRegister
-  private currentState!: IPeerState
-  private readonly states: { [id: string]: IPeerState }
+  public hashManager: HashManager
+  public elected: string | undefined
+  private currentState!: PeerState
+  private readonly states: { [id: string]: PeerState }
 
   constructor (hashManager: HashManager, register: NetworkRegister, actionManager: ActionManager, state: string) {
+    this.hashManager = hashManager
     this.register = register
     this.actionManager = actionManager
     this.states = {

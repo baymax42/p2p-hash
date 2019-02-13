@@ -8,6 +8,15 @@ export interface IHashEntry {
 
 export class HashManager extends EventEmitter {
   private _hashes: IHashEntry[] = []
+  private _file: string = ''
+
+  get file (): string {
+    return this._file
+  }
+
+  set file (value: string) {
+    this._file = value
+  }
 
   get hashes (): IHashEntry[] {
     return this._hashes
@@ -28,5 +37,21 @@ export class HashManager extends EventEmitter {
         solved: this._hashes.filter((v) => v.plaintext !== '')
       })
     }
+  }
+
+  public parseFile (content: string) {
+    const lines = content.split('\n')
+    const hashes: IHashEntry[] = []
+    lines.forEach((value, index) => {
+      const splitLine = value.trim().split(' ')
+      if (splitLine.length === 2) {
+        hashes.push({
+          hash: splitLine[1],
+          method: splitLine[0],
+          plaintext: ''
+        })
+      }
+    })
+    this.hashes = hashes
   }
 }

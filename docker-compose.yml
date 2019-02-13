@@ -7,7 +7,7 @@ services:
     working_dir: /app
     volumes:
       - "/p2p:/app"
-    command: ["npm", "run", "peer"]
+    command: ["npm", "run", "peerWithFile"]
 
   peer2:
     image: node:latest

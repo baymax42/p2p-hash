@@ -5,14 +5,19 @@ import { LOGGER } from 'utils'
 
 // IPC class for receiving and processing messages from peers
 export class MessageReceiver extends EventEmitter {
-  private server: Socket
-  private ips: string[]
-
   constructor (port: number) {
     super()
-    this.ips = this.getIpAddresses()
+    this._ips = this.getIpAddresses()
     this.server = dgram.createSocket('udp4')
     this.server.bind(port)
+  }
+
+  private server: Socket
+
+  private _ips: string[]
+
+  get ips (): string[] {
+    return this._ips
   }
 
   // Start receiver and register event handlers
@@ -23,7 +28,7 @@ export class MessageReceiver extends EventEmitter {
 
     this.server.on('message', (msg, info) => {
       // Ignore message if it comes from itself
-      if (this.ips.find((v) => v === info.address) == null) {
+      if (this._ips.find((v) => v === info.address) == null) {
         this.emitMessage(this.unmarshal(msg), info)
       }
     })

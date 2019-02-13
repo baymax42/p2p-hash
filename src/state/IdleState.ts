@@ -1,10 +1,9 @@
-import { IPeerState, Peer } from '.'
+import { Peer } from '.'
+import { PeerState } from './PeerState'
 
-export class IdleState implements IPeerState {
-  private context: Peer
-
+export class IdleState extends PeerState {
   constructor (context: Peer) {
-    this.context = context
+    super(context)
   }
 
   public queryNetworkMessageHandler (request: any): void {}

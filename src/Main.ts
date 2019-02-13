@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { NetworkRegister } from './network/NetworkRegister'
 import { Peer } from './state'
-import { ActionManager, HashManager, IHashEntry } from './utils'
+import { ActionManager, HashManager } from './utils'
 
 const serverProcess = fork(path.resolve('server.js'), [])
 
@@ -14,29 +14,14 @@ const serverProcess = fork(path.resolve('server.js'), [])
 //     stdio: ['pipe', 'pipe', 'pipe', 'ipc']
 //   })
 
-function parseFile (content: string): IHashEntry[] {
-  const lines = content.split('\n')
-  const hashes: IHashEntry[] = []
-  lines.forEach((value, index) => {
-    const splitLine = value.trim().split(' ')
-    if (splitLine.length === 2) {
-      hashes.push({
-        hash: splitLine[1],
-        method: splitLine[0],
-        plaintext: ''
-      })
-    }
-  })
-  return hashes
-}
-
 const hashFile = process.argv[2]
 const hashManager = new HashManager()
 
 if (hashFile) {
   fs.readFile(hashFile, (err, data) => {
     if (!err) {
-      hashManager.hashes = parseFile(data.toString())
+      hashManager.file = hashFile
+      hashManager.parseFile(data.toString())
     } else {
       throw ReferenceError('File does not exist')
     }
@@ -46,10 +31,7 @@ if (hashFile) {
 serverProcess.on('message', (content) => {
   hashManager.once('change', (out) => {
     serverProcess.send({
-      content: {
-        all: hashManager.hashes,
-        solved: hashManager.hashes.filter((v) => v.plaintext !== '')
-      },
+      content: out,
       type: 'message'
     })
   })

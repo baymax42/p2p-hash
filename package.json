@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "NODE_ENV=development webpack --progress --watch --config config/webpack.config.js",
     "server": "node build/server.js",
-    "peer": "node build/peer.js",
+    "peer": "cd build && node peer.js",
+    "peerWithFile": "cd build && node peer.js testHashFile.txt",
     "worker": "node build/worker.js"
   },
   "author": "Paweł Górski",

@@ -29,11 +29,14 @@ export class FileDownloader extends EventEmitter {
           LOGGER.format_log(client.localAddress, 'FILE SAVING ERROR', error.message)
         }
       })
+      LOGGER.format_log(client.localAddress, 'DOWNLOAD SUCCEED', '')
       this.emit('completed', file.toString())
     })
 
     client.on('error', (error) => {
       LOGGER.format_log(client.localAddress, 'DOWNLOAD ERROR', error.message)
+      client.end()
+      setTimeout(() => this.download(host, port), 1000)
     })
   }
 }

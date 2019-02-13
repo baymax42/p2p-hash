@@ -1,7 +1,7 @@
-import { IPeerState, Peer } from '.'
+import { Peer } from '.'
+import { PeerState } from './PeerState'
 
-export class SourceState implements IPeerState {
-  private context: Peer
+export class SourceState extends PeerState {
   private readonly CHANGE_STATE_ACTION = {
     callback: () => {
       this.context.changeState('worker')
@@ -9,28 +9,26 @@ export class SourceState implements IPeerState {
     name: 'workerState',
     timeout: 5000
   }
+
   constructor (context: Peer) {
-    this.context = context
+    super(context)
   }
 
-  public queryNetworkMessageHandler (request: any): void {}
-
-  public electionMessageHandler (request: any): void {}
-
   public workingOnMessageHandler (request: any): void {
+    super.workingOnMessageHandler(request)
     if (request.content) {
-      this.context.register.upsertEntry(request.remote.address, {file: null, hash: request.content.hash})
+      this.context.register.upsertEntry(request.remote.address, { hasFile: null, hash: request.content.hash })
     }
   }
 
-  public fetchFileMessageHandler (request: any): void {}
+  public fetchFileMessageHandler (request: any): void {
+    super.fetchFileMessageHandler(request)
+    this.context.actionManager.addTimedAction(this.CHANGE_STATE_ACTION)
+    this.context.networkFacade.send('', this.context.hashManager.file, 'file')
+  }
 
   public initialize (): void {
-    this.context.actionManager.addTimedAction(
-      this.CHANGE_STATE_ACTION.name,
-      this.CHANGE_STATE_ACTION.callback,
-      this.CHANGE_STATE_ACTION.timeout
-    )
+    this.context.actionManager.addTimedAction(this.CHANGE_STATE_ACTION)
   }
 
   public toString (): string {

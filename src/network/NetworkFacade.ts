@@ -20,14 +20,18 @@ export class NetworkFacade {
     this.messageReceiver.start()
   }
 
+  get ip () {
+    return this.messageReceiver.ips[0]
+  }
+
   public send (address: string, content: any, resourceType: string): void {
     if (resourceType === 'message') {
       this.messageForwarder.forwardMessage(address, this.udpPort, content)
     } else if (resourceType === 'file') {
       if (!this.fileHost) {
         this.fileHost = new FileHost(this.tcpPort)
+        this.fileHost.hostFile(content)
       }
-      this.fileHost.hostFile(content)
     }
   }
 

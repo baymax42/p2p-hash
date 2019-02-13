@@ -1,26 +1,33 @@
 // ActionManager
 // Class which manages timed callbacks and callback with interval
 // and ties them with specific name
+
+export interface IAction {
+  name: string,
+  callback: () => void,
+  timeout: number
+}
+
 export class ActionManager {
   // Store intervals and timeouts in separate maps
   // We need to clear specific types with different functions
   private intervals: Map<string, NodeJS.Timeout> = new Map<string, NodeJS.Timeout>()
   private timeouts: Map<string, NodeJS.Timeout> = new Map<string, NodeJS.Timeout>()
 
-  public addCyclicAction (name: string, callback: () => void, interval: number) {
-    if (this.intervals.has(name)) {
+  public addCyclicAction (action: IAction) {
+    if (this.intervals.has(action.name)) {
       // @ts-ignore - It won't return undefined
       clearInterval(this.intervals.get(name))
     }
-    this.intervals.set(name, setInterval(callback, interval))
+    this.intervals.set(action.name, setInterval(action.callback, action.timeout))
   }
 
-  public addTimedAction (name: string, callback: () => void, timeout: number) {
-    if (this.timeouts.has(name)) {
+  public addTimedAction (action: IAction) {
+    if (this.timeouts.has(action.name)) {
       // @ts-ignore - It won't return undefined
-      clearTimeout(this.timeouts.get(name))
+      clearTimeout(this.timeouts.get(action.name))
     }
-    this.timeouts.set(name, setTimeout(callback, timeout))
+    this.timeouts.set(action.name, setTimeout(action.callback, action.timeout))
   }
 
   public clearTimedAction (name: string): void {
