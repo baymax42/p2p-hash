@@ -8,6 +8,8 @@ services:
     volumes:
       - "/p2p:/app"
     command: ["npm", "run", "peerWithFile"]
+    ports:
+      - 8001:8000
 
   peer2:
     image: node:latest
@@ -16,6 +18,8 @@ services:
     volumes:
       - "/p2p:/app"
     command: ["npm", "run", "peer"]
+    ports:
+      - 8002:8000
 
   peer3:
     image: node:latest
@@ -24,3 +28,5 @@ services:
     volumes:
       - "/p2p:/app"
     command: ["npm", "run", "peer"]
+    ports:
+      - 8003:8000
