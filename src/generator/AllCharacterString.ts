@@ -1,8 +1,9 @@
 import { AllCharacterStringIterator, IStringIterator } from './iterator'
+import { IString } from './index'
 
 // AllCharacterString
 // Helper generator class for generating strings of given length
-export class AllCharacterString {
+export class AllCharacterString implements IString {
   public length: number
 
   constructor (length: number) {
