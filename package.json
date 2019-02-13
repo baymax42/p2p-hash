@@ -6,13 +6,13 @@
   "scripts": {
     "dev": "NODE_ENV=development webpack --progress --watch --config config/webpack.config.js",
     "server": "node build/server.js",
-    "p2p": "node build/p2p.js",
+    "peer": "cd build && node peer.js",
+    "peerWithFile": "cd build && node peer.js testHashFile.txt",
     "worker": "node build/worker.js"
   },
   "author": "Paweł Górski",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.18.0",
     "express": "^4.16.4"
   },
   "devDependencies": {

@@ -1,5 +1,4 @@
 import { createHash } from 'crypto'
-import { AllCharacterString } from '../../AllCharacterString'
 import { IString } from '../../index'
 import { IHashStrategy } from '../index'
 
@@ -16,12 +15,12 @@ export class MD5Strategy implements IHashStrategy {
     const allStringIterator = this.istring.iterator()
     do {
       checked = allStringIterator.next()
-      temporary = createHash('md5').update(checked).digest('hex').toString()
-      if (temporary === hash) {
+      temporary = createHash('md5').update(checked).digest('hex')
+      if (temporary.toLowerCase() === hash.toLowerCase()) {
         return checked
       }
     } while (allStringIterator.hasNext())
     // empty string means that there was no fitting word
-    return ''
+    throw Error('Unable to crack hash')
   }
 }

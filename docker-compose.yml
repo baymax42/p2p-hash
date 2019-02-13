@@ -1,30 +1,42 @@
-version: '3'
+version: '3.4'
 
 services:
-  server:
+  peer1:
     image: node:latest
     build: .
+    working_dir: /app
+    volumes:
+      - "/p2p:/app"
+    command: ["npm", "run", "peerWithFile"]
     ports:
-      - "8001:8000"
+      - 8001:8000
+
+  peer2:
+    image: node:latest
+    build: .
     working_dir: /app
     volumes:
       - "/p2p:/app"
-    command: ["npm", "run", "server"]
-
-  server1:
-    image: node:latest
-    build: .
+    command: ["npm", "run", "peer"]
     ports:
-      - "8002:8000"
-    working_dir: /app
-    volumes:
-      - "/p2p:/app"
-    command: ["npm", "run", "server"]
+      - 8002:8000
 
-  p2p:
+  peer3:
     image: node:latest
     build: .
     working_dir: /app
     volumes:
       - "/p2p:/app"
-    command: ["npm", "run", "p2p"]
+    command: ["npm", "run", "peer"]
+    ports:
+      - 8003:8000
+
+  peer4:
+    image: node:latest
+    build: .
+    working_dir: /app
+    volumes:
+      - "/p2p:/app"
+    command: ["npm", "run", "peer"]
+    ports:
+      - 8004:8000

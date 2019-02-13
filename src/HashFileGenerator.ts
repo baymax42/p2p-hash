@@ -18,7 +18,7 @@ function createHashFile (amount: number, wordLength: number, hashMethods: string
   logger.end()
 }
 
-const methods = ['md5', 'sha1', 'sha256']
+const methods = ['md5', 'sha256']
 
 let hashAmount = -1
 let length = -1

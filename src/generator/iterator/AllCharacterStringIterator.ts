@@ -17,7 +17,7 @@ export class AllCharacterStringIterator {
   public next (): string {
     if (!this.hasEnded) {
       const str = this.currentString.map((value: number) => this.mapping.charAt(value)).join('')
-      if (Array.from(str).every((v) => v === ALL_SYMBOLS.charAt(ALL_SYMBOLS.length - 1))) {
+      if (Array.from(str).every((v) => v === this.mapping.charAt(this.mapping.length - 1))) {
         this.hasEnded = true
       } else {
         this.constructNextString()
@@ -36,17 +36,19 @@ export class AllCharacterStringIterator {
     let rem = 0
     for (const j in this.currentString) {
       if (Number(j) === 0) {
-        if (this.currentString[j] + rem >= ALL_SYMBOLS.length - 1) {
+        // Prevent printing single character when generating
+        if (this.currentString[j] + rem >= this.mapping.length - 1) {
           rem = 1
-          this.currentString[j] = (this.currentString[j] + rem) % ALL_SYMBOLS.length
+          this.currentString[j] = (this.currentString[j] + rem) % this.mapping.length
         } else {
+          // Increment only first position - rest will follow
           this.currentString[j] = this.currentString[j] + 1 + rem
           rem = 0
         }
       } else {
-        if (this.currentString[j] + rem > ALL_SYMBOLS.length - 1) {
+        if (this.currentString[j] + rem > this.mapping.length - 1) {
           rem = 1
-          this.currentString[j] = (this.currentString[j] + rem) % ALL_SYMBOLS.length
+          this.currentString[j] = (this.currentString[j] + rem) % this.mapping.length
         } else {
           this.currentString[j] = this.currentString[j] + rem
           rem = 0

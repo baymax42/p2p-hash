@@ -2,30 +2,47 @@ import { MD5Strategy } from './concreteStrategies/MD5Strategy'
 import { SHA1Strategy } from './concreteStrategies/SHA1Strategy'
 import { SHA256Strategy } from './concreteStrategies/SHA256Strategy'
 import { HashCracker } from './HashCracker'
-import { AllCharacterString, IString } from '../index'
+import { IHashEntry, IString } from '../index'
 
 export class HashWorker {
-  private crack: HashCracker
-  public constructor () {
-    this.crack = new HashCracker(new MD5Strategy(new AllCharacterString(1)))
+  private cracker!: HashCracker
+
+  public constructor (collection: IString) {
+    this._collection = collection
   }
-  public decrypt (hash: string, length: number) {
-    if (this.determineAlgorithm(hash, length)) {
-      return this.crack.crackHash(hash)
+
+  private _collection: IString
+
+  get collection (): IString {
+    return this._collection
+  }
+
+  set collection (value: IString) {
+    this._collection = value
+  }
+
+  public crackHash (hash: IHashEntry): IHashEntry {
+    if (this.determineAlgorithm(hash)) {
+      return {
+        method: hash.method,
+        hash: hash.hash,
+        plaintext: this.cracker.crackHash(hash.hash)
+      }
     } else {
       throw Error('Hash not recognized')
     }
   }
-  private determineAlgorithm (hash: string, length: number): boolean {
-    const istring: IString = new AllCharacterString(length)
-    if (hash.length === 32) {
-      this.crack.setMethod(new MD5Strategy(istring))
+
+  private determineAlgorithm (hash: IHashEntry): boolean {
+    this.cracker = new HashCracker(new MD5Strategy(this._collection))
+    if (hash.method === 'md5') {
+      this.cracker.setMethod(new MD5Strategy(this._collection))
       return true
-    } else if (hash.length === 40) {
-      this.crack.setMethod(new SHA1Strategy(istring))
+    } else if (hash.method === 'sha1') {
+      this.cracker.setMethod(new SHA1Strategy(this._collection))
       return true
-    } else if (hash.length === 64) {
-      this.crack.setMethod(new SHA256Strategy(istring))
+    } else if (hash.method === 'sha256') {
+      this.cracker.setMethod(new SHA256Strategy(this._collection))
       return true
     } else {
       return false
