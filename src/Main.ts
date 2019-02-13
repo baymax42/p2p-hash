@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { NetworkRegister } from './network/NetworkRegister'
 import { Peer } from './state'
-import { ActionManager, HashManager, IHashEntry } from './utils'
+import {ActionManager, HashManager, IHashEntry, LOGGER} from './utils'
 
 const serverProcess = fork(path.resolve('server.js'), [])
 
@@ -58,8 +58,8 @@ serverProcess.on('message', (content) => {
 // TODO: remove after it is fully functional
 setInterval(() => {
   hashManager.update({
-    hash: 'f7b013eeb82da1340028f188231e6645535c5bee1ccbdf8ce5476fc1cf327eb9',
-    method: 'sha256',
+    hash: 'e8fa0c6efb89c1dacbcc87c27dcec7356b4661a7',
+    method: 'sha1',
     plaintext: 'abcd'
   })
 }, 4000)

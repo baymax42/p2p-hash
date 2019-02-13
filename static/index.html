@@ -2,18 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>ExpressJS</title>
 </head>
-<body>
-<h1>Hello</h1>
+<body class="background">
+<a href="#" class="progress">
+    <h1 id="progress">0</h1>
+</a>
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
+  let progress = 0.0
+
   function getHashes () {
     return axios.post('/api/hashes').then((response) => {
       if (response.data) {
-        console.log(response.data.all.length)
-        console.log(response.data.solved.length)
+        progress = ((response.data.solved.length / response.data.all.length) * 100).toFixed(2) + '%'
+        document.getElementById('progress').innerText = progress
       }
       getHashes()
     }).catch((err) => {
