@@ -16,7 +16,6 @@ function awaitHashes (): never {
   const events = require('events')
   const eventEmitter = new events.EventEmitter()
   while (true) {
-    // here I need the function that will do what required
     eventEmitter.on('hash', breakTheHash)
   }
 }
