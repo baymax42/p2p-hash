@@ -24,6 +24,28 @@ export class NewbieState extends PeerState {
     super(context)
   }
 
+  public fetchFileMessageHandler (request: any): void {
+    super.fetchFileMessageHandler(request)
+    this.context.actionManager.addTimedAction(this.CHANGE_STATE_ACTION)
+  }
+
+  public workingOnMessageHandler (request: any): void {
+    super.workingOnMessageHandler(request)
+    this.context.actionManager.addTimedAction(this.CHANGE_STATE_ACTION)
+  }
+
+  public joinMessageHandler (request: any): void {
+    super.joinMessageHandler(request)
+    if (request.content) {
+      const network = request.content.network
+      this.context.register.elected = request.remote.address
+      for (let i in network.keys) {
+        this.context.register.upsertEntry(network.keys[i], network.values[i])
+      }
+      this.context.changeState('destination')
+    }
+  }
+
   public initialize (): void {
     this.context.actionManager.addTimedAction(this.CHANGE_STATE_ACTION)
     this.context.actionManager.addCyclicAction(this.QUERY_ACTION)

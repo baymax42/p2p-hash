@@ -40,6 +40,22 @@ export abstract class PeerState {
     )
   }
 
+  public joinMessageHandler (request: any): void {
+    LOGGER.format_log(
+      this.context.networkFacade.ip,
+      this.toString(),
+      'JOIN from ' + request.remote.address
+    )
+  }
+
+  public crackedMessageHandler (request: any): void {
+    LOGGER.format_log(
+      this.context.networkFacade.ip,
+      this.toString(),
+      'CRACKED from ' + request.remote.address
+    )
+  }
+
   public abstract initialize (): void
 
   public abstract toString (): string

@@ -1,11 +1,13 @@
 interface INetworkEntry {
   file: boolean,
-  hash: string
+  hashIndex: number
 
   [key: string]: any
 }
 
 export class NetworkRegister {
+  public elected: string | undefined
+
   constructor () {
     this._entries = new Map()
   }
@@ -38,5 +40,20 @@ export class NetworkRegister {
 
   public checkHash (hash: string): boolean {
     return true
+  }
+
+  public static returnGreaterOrEqualAddress (address1: string, address2: string): string {
+    const addr1 = address1.split('.').reverse()
+    const addr2 = address2.split('.').reverse()
+
+    for (let i = 0; i < addr1.length; i++) {
+      if (addr1[i] > addr2[i]) {
+        return address1
+      } else if (addr1[i] < addr2[i]) {
+        return address2
+      }
+    }
+    // if addresses are equal, return first
+    return address1
   }
 }

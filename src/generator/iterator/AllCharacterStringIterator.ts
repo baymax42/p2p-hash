@@ -1,4 +1,4 @@
-import { CHARS } from 'utils'
+import { ALL_SYMBOLS } from 'utils'
 
 // Iterator returning next string of given length
 export class AllCharacterStringIterator {
@@ -8,7 +8,7 @@ export class AllCharacterStringIterator {
   private currentString: number[]
 
   constructor (length: number) {
-    this.mapping = CHARS
+    this.mapping = ALL_SYMBOLS
     this.length = length
     this.hasEnded = false
     this.currentString = Array.from({ length: this.length }, () => 0)

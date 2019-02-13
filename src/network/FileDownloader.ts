@@ -2,6 +2,8 @@ import { EventEmitter } from 'events'
 import * as fs from 'fs'
 import * as net from 'net'
 import { LOGGER } from 'utils'
+import { randomBytes } from 'crypto'
+import * as path from 'path'
 
 export class FileDownloader extends EventEmitter {
   private chunks: Buffer[]
@@ -20,8 +22,9 @@ export class FileDownloader extends EventEmitter {
 
     // if file downloading ends save file and emit content
     client.on('end', () => {
-      const file = Buffer.concat(this.chunks)
-      fs.writeFile('/hashFile.dat', file, {
+      const content = Buffer.concat(this.chunks)
+      const filename = path.resolve('/', randomBytes(16).toString('hex'))
+      fs.writeFile(filename, content, {
         encoding: 'UTF-8',
         flag: 'w'
       }, (error) => {
@@ -30,7 +33,7 @@ export class FileDownloader extends EventEmitter {
         }
       })
       LOGGER.format_log(client.localAddress, 'DOWNLOAD SUCCEED', '')
-      this.emit('completed', file.toString())
+      this.emit('completed', content.toString())
     })
 
     client.on('error', (error) => {

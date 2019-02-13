@@ -17,7 +17,7 @@ export class SourceState extends PeerState {
   public workingOnMessageHandler (request: any): void {
     super.workingOnMessageHandler(request)
     if (request.content) {
-      this.context.register.upsertEntry(request.remote.address, { hasFile: null, hash: request.content.hash })
+      this.context.register.upsertEntry(request.remote.address, { hasFile: null, hashIndex: request.content.hashIndex })
     }
   }
 

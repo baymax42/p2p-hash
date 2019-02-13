@@ -30,3 +30,13 @@ services:
     command: ["npm", "run", "peer"]
     ports:
       - 8003:8000
+
+  peer4:
+    image: node:latest
+    build: .
+    working_dir: /app
+    volumes:
+      - "/p2p:/app"
+    command: ["npm", "run", "peer"]
+    ports:
+      - 8004:8000

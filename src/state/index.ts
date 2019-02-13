@@ -14,7 +14,6 @@ export class Peer {
   public actionManager: ActionManager
   public register: NetworkRegister
   public hashManager: HashManager
-  public elected: string | undefined
   private currentState!: PeerState
   private readonly states: { [id: string]: PeerState }
 
@@ -58,11 +57,21 @@ export class Peer {
     this.currentState.fetchFileMessageHandler(request)
   }
 
+  public joinMessageHandler (request: any): void {
+    this.currentState.joinMessageHandler(request)
+  }
+
+  public crackedMessageHandler (request: any): void {
+    this.currentState.crackedMessageHandler(request)
+  }
+
   private setupHandlers (): void {
     this.networkFacade
       .on('queryNetwork', (req) => this.queryNetworkMessageHandler(req))
       .on('workingOn', (req) => this.workingOnMessageHandler(req))
       .on('election', (req) => this.electionMessageHandler(req))
       .on('fetchFile', (req) => this.fetchFileMessageHandler(req))
+      .on('join', (req) => this.joinMessageHandler(req))
+      .on('cracked', (req) => this.crackedMessageHandler(req))
   }
 }

@@ -15,12 +15,12 @@ html {
 }
 
 .progress {
-    background-color: lightgray;
+    background-color: transparent;
     height: 300px;
     text-align: center;
     width: 100%;
     text-decoration: none;
-
+    position: relative;
 }
 
 h1 {
@@ -30,6 +30,13 @@ h1 {
     font-family: 'Oswald', sans-serif;
     letter-spacing: 3px;
     font-weight: normal;
-    color: black;
+    color: white;
+}
 
+#canvas {
+    position: absolute;
+}
+
+#canvas2 {
+    position: absolute;
 }

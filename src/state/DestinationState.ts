@@ -20,14 +20,14 @@ export class DestinationState extends PeerState {
   public workingOnMessageHandler (request: any): void {
     super.workingOnMessageHandler(request)
     if (request.content) {
-      this.context.register.upsertEntry(request.remote.address, { hasFile: null, hash: request.content.hash })
+      this.context.register.upsertEntry(request.remote.address, { hasFile: null, hashIndex: request.content.hashIndex })
     }
   }
 
   public initialize (): void {
     this.context.actionManager.addCyclicAction(this.QUERY_ACTION)
-    LOGGER.format_log(this.context.networkFacade.ip, 'ELECTED', this.context.elected)
-    this.context.networkFacade.downloadFile(this.context.elected || '', (content) => {
+    LOGGER.format_log(this.context.networkFacade.ip, 'ELECTED', this.context.register.elected)
+    this.context.networkFacade.downloadFile(this.context.register.elected || '', (content) => {
       this.context.hashManager.parseFile(content)
       this.context.changeState('worker')
     })

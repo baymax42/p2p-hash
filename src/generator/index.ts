@@ -8,3 +8,9 @@ export { RandomString } from './RandomString'
 export interface IString {
   iterator (): IStringIterator
 }
+
+export interface IHashEntry {
+  method: string
+  hash: string
+  plaintext: string
+}

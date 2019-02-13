@@ -1,21 +1,7 @@
 import { Peer } from '.'
 import { LOGGER } from '../utils'
 import { PeerState } from './PeerState'
-
-function returnGreaterOrEqualAddress (address1: string, address2: string): string {
-  const addr1 = address1.split('.').reverse()
-  const addr2 = address1.split('.').reverse()
-
-  for (let i = 0; i < addr1.length; i++) {
-    if (addr1[i] > addr2[i]) {
-      return address1
-    } else if (addr1[i] < addr2[i]) {
-      return address2
-    }
-  }
-  // if addresses are equal, return first
-  return address1
-}
+import { NetworkRegister } from '../network/NetworkRegister'
 
 export class ElectionState extends PeerState {
   private hasFile: boolean
@@ -24,9 +10,9 @@ export class ElectionState extends PeerState {
     callback: () => {
       const isFileInNetwork = Array.from(this.context.register.entries.values()).findIndex((v) => v.hasFile) !== -1
       if (!isFileInNetwork && !this.hasFile) {
-        LOGGER.error('No hasFile in network - aborting...')
-        process.exit(1)
-      } else if (this.context.elected === this.context.networkFacade.ip) {
+        LOGGER.error('No file in network - aborting...')
+        process.exit(0)
+      } else if (this.context.register.elected === this.context.networkFacade.ip) {
         this.context.changeState('source')
       } else {
         this.context.changeState('destination')
@@ -64,7 +50,7 @@ export class ElectionState extends PeerState {
     super.electionMessageHandler(request)
     if (request.content) {
       this.elect(request)
-      this.context.register.upsertEntry(request.remote.address, { hasFile: request.content.hasFile, hash: null })
+      this.context.register.upsertEntry(request.remote.address, { hasFile: request.content.hasFile, hashIndex: null })
     }
   }
 
@@ -73,7 +59,7 @@ export class ElectionState extends PeerState {
     this.context.actionManager.addTimedAction(this.CHANGE_STATE_ACTION)
 
     this.hasFile = this.context.hashManager.hashes.length > 0
-    this.context.elected = this.hasFile ? this.context.networkFacade.ip : undefined
+    this.context.register.elected = this.hasFile ? this.context.networkFacade.ip : undefined
   }
 
   public toString (): string {
@@ -81,10 +67,10 @@ export class ElectionState extends PeerState {
   }
 
   private elect (request: any) {
-    if (this.context.elected && request.content.hasFile) {
-      this.context.elected = returnGreaterOrEqualAddress(this.context.elected, request.remote.address)
+    if (this.context.register.elected && request.content.hasFile) {
+      this.context.register.elected = NetworkRegister.returnGreaterOrEqualAddress(this.context.register.elected, request.remote.address)
     } else if (request.content.hasFile) {
-      this.context.elected = request.remote.address
+      this.context.register.elected = request.remote.address
     }
   }
 }
