@@ -6,7 +6,7 @@ module.exports = {
   mode: process.env.NODE_ENV,
   entry: {
     server: path.resolve(__dirname, '../src/Server.ts'),
-    worker: path.resolve(__dirname, '../src/Worker.ts'),
+    worker: path.resolve(__dirname, '../src/listener.ts'),
     fileGenerator: path.resolve(__dirname, '../src/HashFileGenerator.ts')
   },
   target: 'node',

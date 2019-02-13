@@ -1,4 +1,4 @@
-import { HashWorker } from './strategy/HashWorker'
+import { HashWorker } from './generator/strategy/HashWorker'
 
 const hasher: HashWorker = new HashWorker()
 
