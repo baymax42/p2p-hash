@@ -1,15 +1,21 @@
 import { createHash } from 'crypto'
 import { AllCharacterString } from '../../AllCharacterString'
 import { IHashStrategy } from '../index'
+import { IString } from '../../index'
 
 export class SHA256Strategy implements IHashStrategy {
+  private istring: IString
+
+  constructor (collection: IString) {
+    this.istring = collection
+  }
   public crackHash (hash: string): string {
     let temporary: string
     let checked: string
-    const allStringIterator = new AllCharacterString(10).iterator()
+    const allStringIterator = this.istring.iterator()
     do {
       checked = allStringIterator.next()
-      temporary = createHash('sha256').update(checked).update('hex').toString()
+      temporary = createHash('sha256').update(checked).digest('hex').toString()
       if (temporary === hash) {
         return checked
       }
